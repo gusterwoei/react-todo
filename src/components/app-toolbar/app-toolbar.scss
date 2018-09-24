@@ -1,0 +1,9 @@
+@import '../../variables.scss';
+
+.app-toolbar {
+   background-color: $primary-color;
+   padding: 15px;
+   color: black;
+   font-weight: bold;
+   font-size: 18px;
+}

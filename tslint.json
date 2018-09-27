@@ -19,6 +19,18 @@
 			false
 		],
 		"no-unused-expression": false,
-		"interface-name": [true, "never-prefix"]
+		"interface-name": [true, "never-prefix"],
+		"no-empty": false,
+		"prefer-const": false,
+		"one-variable-per-declaration": false,
+		"member-ordering": false,
+		"jsdoc-format": false,
+		"array-type": false,
+		"member-access": false,
+		"no-empty-interface": false,
+		"jsx-no-lambda": false,
+		"no-console": false,
+		"curly": false,
+		"triple-equals": false
 	}
 }

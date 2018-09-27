@@ -1,0 +1,11 @@
+.todo-list-page {
+  background-color: #eeeeee;
+  margin-bottom: 100px; }
+  .todo-list-page .check-icon {
+    font-size: 21px;
+    color: green; }
+  .todo-list-page .list-item {
+    cursor: pointer; }
+  .todo-list-page a {
+    text-decoration: none;
+    color: #333; }

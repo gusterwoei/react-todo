@@ -17,7 +17,7 @@ export default class AppToolbar extends Component<Props> {
          <div className='d-sm-flex flex-row app-toolbar'>
             <div>{this.props.title}</div>
             <div className='flex-grow-1' />
-            <img alt='' src='../../logo.svg' />
+            {/* <img alt='' src='../../logo.svg' /> */}
          </div>
       )
    }

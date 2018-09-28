@@ -18,9 +18,9 @@ export default class FloatingActionButton extends Component<Props> {
 	render() {
 		return (
 			<div className='fab'>
-				<a href="#" className="fab-wrapper">
+				<div className="fab-wrapper">
 					<i className="fa fa-plus my-float" />
-				</a>
+				</div>
 			</div>
 		)
 	}

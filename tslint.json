@@ -31,6 +31,8 @@
 		"jsx-no-lambda": false,
 		"no-console": false,
 		"curly": false,
-		"triple-equals": false
+		"triple-equals": false,
+		"no-string-throw": false,
+		"variable-name": false
 	}
 }

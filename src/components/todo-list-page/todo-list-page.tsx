@@ -14,6 +14,8 @@ import { Util } from '../../util';
 import * as dateformat from 'dateformat'
 import FloatingActionButton from '../fab/fab';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { StorageService } from '../../services/storage-service';
+import { RouterHistory } from 'react-router-dom';
 
 interface State {
 	data: TodoListModel[]
@@ -28,10 +30,12 @@ export default class TodoListPage extends Component<any, State> {
 	}
 
 	private getTasks() {
-		let tasks = Util.getDummyTasks()
+		// let tasks = Util.getDummyTasks()
+		let tasks = StorageService.get().getTasks()
 		let mData: TodoListModel[] = []
 
 		let year: number, month: number, day: number
+		console.log(tasks)
 		tasks.forEach((task, index) => {
 			let model: TodoListModel = {}
 			if (task.datetime.getFullYear() !== year || task.datetime.getMonth() !== month || task.datetime.getDate() !== day) {
@@ -52,14 +56,10 @@ export default class TodoListPage extends Component<any, State> {
 		}
 	}
 
-	private addNewTask() {
-
-	}
-
 	render() {
 		return (
 			<div className='page-root todo-list-page'>
-				<AppToolbar title='React Todo' />
+				<AppToolbar title='React Todo' history={this.props.history} />
 				<div className='page-content'>
 					<h2>Today Tasks</h2>
 

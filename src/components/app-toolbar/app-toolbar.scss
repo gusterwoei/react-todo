@@ -1,9 +1,12 @@
 @import '../../variables.scss';
-
 .app-toolbar {
    background-color: $secondary-color;
    padding: 15px;
    color: #fff;
-   //font-weight: bold;
    font-size: 18px;
+   
+   .back-button {
+        cursor: pointer;
+        color: white;
+   }
 }

@@ -3,3 +3,6 @@
   padding: 15px;
   color: #fff;
   font-size: 18px; }
+  .app-toolbar .back-button {
+    cursor: pointer;
+    color: white; }

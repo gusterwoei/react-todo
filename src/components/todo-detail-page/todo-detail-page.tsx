@@ -3,10 +3,12 @@ import { Component } from 'react';
 import AppToolbar from '../app-toolbar/app-toolbar';
 import './todo-detail-page.css';
 import { Task } from '../../models/task';
-import { unstable_batchedUpdates } from 'react-dom';
+import { StorageService } from '../../services/storage-service';
+import { RouterHistory } from 'react-router-dom';
 
 interface Props {
-	task?: Task
+	task?: Task,
+	history?: RouterHistory
 }
 interface State {
 	task?: Task,
@@ -60,8 +62,6 @@ export default class TodoDetailPage extends Component<Props, State> {
 						this.mTask.subtasks.push({ title: this.mSubTaskTitle })
 						this.mSubTaskTitle = ''
 						this.refresh()
-
-						console.log('TASK', this.mTask)
 					}} />
 			</div>
 
@@ -75,18 +75,34 @@ export default class TodoDetailPage extends Component<Props, State> {
 		})
 	}
 
+	private submit(e) {
+		try {
+			if (this.mTask.title.trim() == '') {
+				throw new ErrorEvent('Title must not be empty')
+			}
+
+			// save to the local storage
+			StorageService.get().saveTask(this.mTask)
+
+			this.props.history.goBack()
+		} catch (err) {
+			alert(err.type)
+		}
+	}
+
 	public render() {
 		return (
 			<div className='page-root todo-detail-page'>
-				<AppToolbar title='Add a new task' />
+				<AppToolbar title='Add a new task' showBackButton={true} history={this.props.history} />
 				<div className='page-content'>
-					<form>
+					{/* <form onSubmit={e => this.submit(e)}> */}
 						{/* title */}
 						<div className='mb-3'>
 							<input
 								type='text'
 								className='form-control title'
 								placeholder='What would you like to do?'
+								required={true}
 								value={this.mTask ? this.mTask.title : ''}
 								onChange={e => {
 									// update title
@@ -95,8 +111,6 @@ export default class TodoDetailPage extends Component<Props, State> {
 									this.refresh()
 								}} />
 						</div>
-
-						{/* <hr /> */}
 
 						{/* subtasks */}
 						{
@@ -109,7 +123,11 @@ export default class TodoDetailPage extends Component<Props, State> {
 							this.createSubtaskField({ title: this.mSubTaskTitle })
 						}
 
-					</form>
+						<button className='btn btn-primary mt-3' onClick={e => {
+							this.submit(e)
+						}}>Complete</button>
+
+					{/* </form> */}
 				</div>
 			</div>
 		)

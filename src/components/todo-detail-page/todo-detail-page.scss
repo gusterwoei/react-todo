@@ -1,4 +1,15 @@
 .todo-detail-page {
+    .page-content {
+        @media only screen and (min-width: 768px) {
+            width: 85%;
+            margin: auto;
+        }
+        @media only screen and (min-width: 1026px) {
+            width: 65%;
+            margin: auto;
+        }
+    }
+    
     .title {
         padding: 30px 10px;
     }

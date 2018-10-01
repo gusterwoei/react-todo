@@ -134,7 +134,6 @@ export default class TodoDetailPage extends Component<Props, State> {
                }} />
 
             <div className='page-content'>
-
                <div className="input-group mb-3">
                   <div className="input-group-prepend">
                      <div className="input-group-text">

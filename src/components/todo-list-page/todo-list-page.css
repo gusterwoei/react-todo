@@ -1,6 +1,8 @@
 .todo-list-page {
   background-color: #eeeeee;
-  margin-bottom: 100px; }
+  overflow: scroll; }
+  .todo-list-page .page-content {
+    margin-bottom: 60px; }
   .todo-list-page .check-icon {
     font-size: 21px;
     color: green; }

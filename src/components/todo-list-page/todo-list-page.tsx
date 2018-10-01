@@ -10,78 +10,100 @@ import { Component } from 'react'
 import './todo-list-page.css'
 import AppToolbar from '../app-toolbar/app-toolbar';
 import { TodoListModel } from '../interfaces/todo-list-model';
-import { Util } from '../../util';
 import * as dateformat from 'dateformat'
 import FloatingActionButton from '../fab/fab';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 import { StorageService } from '../../services/storage-service';
-import { RouterHistory } from 'react-router-dom';
 
 interface State {
-	data: TodoListModel[]
+   data: TodoListModel[]
 }
 
 export default class TodoListPage extends Component<any, State> {
 
-	constructor(props) {
-		super(props)
+   constructor(props) {
+      super(props)
 
-		this.getTasks()
-	}
+      this.getTasks()
+   }
 
-	private getTasks() {
-		// let tasks = Util.getDummyTasks()
-		let tasks = StorageService.get().getTasks()
-		let mData: TodoListModel[] = []
+   private getTasks() {
+      // let tasks = Util.getDummyTasks()
+      let tasks = StorageService.get().getTasks()
+      let mData: TodoListModel[] = []
 
-		let year: number, month: number, day: number
-		console.log(tasks)
-		tasks.forEach((task, index) => {
-			let model: TodoListModel = {}
-			if (task.datetime.getFullYear() !== year || task.datetime.getMonth() !== month || task.datetime.getDate() !== day) {
-				model.date = 'abc'
+      let year: number, month: number, day: number
+      tasks.forEach((task, index) => {
+         let model: TodoListModel = {}
+         if (task.datetime.getFullYear() !== year || task.datetime.getMonth() !== month || task.datetime.getDate() !== day) {
+            // add header
+            model.date = `${task.datetime.getFullYear()}/${task.datetime.getMonth()+1}/${task.datetime.getDate()}`
 
-				year = task.datetime.getFullYear()
-				month = task.datetime.getMonth()
-				day = task.datetime.getDate()
-			}
+            year = task.datetime.getFullYear()
+            month = task.datetime.getMonth()
+            day = task.datetime.getDate()
+            mData.push(model)
+         }
 
-			model.id = index
-			model.task = task
-			mData.push(model)
-		})
+         // add list model
+         model = {}
+         model.id = index
+         model.task = task
+         mData.push(model)
+      })
 
-		this.state = {
-			data: mData
-		}
-	}
+      this.state = {
+         data: mData
+      }
+   }
 
-	render() {
-		return (
-			<div className='page-root todo-list-page'>
-				<AppToolbar title='React Todo' history={this.props.history} />
-				<div className='page-content'>
-					<h2>Today Tasks</h2>
+   render() {
+      return (
+         <div className='page-root todo-list-page'>
+            <AppToolbar title='React Todo' history={this.props.history} />
+            <div className='page-content'>
 
-					{this.state.data.map(item =>
-						<Link key={item.id} to={{ pathname: '/detail', state: { task: item.task } }}>
-							<div className='card p-3 mb-3 list-item'>
-								<div className='row align-middle d-flex flex-row pr-3 pl-3'>
-									<span className='flex-grow-1'>{item.task ? item.task.title : ''}</span>
-									<span>{item.task ? dateformat(item.task.datetime, 'hh:MM TT') : ''}</span>
-									<div><i className="fas fa-check-circle pl-3 check-icon" /></div>
-								</div>
-							</div>
-						</Link>
-					)}
+               {this.state.data.map(item =>
+                  <div key={item.date ? item.date : item.id}>
+                     {item.date ?
+                        // date header
+                        <h5 className='mt-2 ml-1'>{item.date}</h5>
+                        :
+                        <Link to={{ pathname: '/detail', state: { task: item.task } }}>
+                           <div className='card p-3 mb-2 list-item'>
+                              <div className='row align-middle d-flex flex-row justify-content-end pr-3 pl-3'>
+                                 {/* title */}
+                                 <span className='flex-grow-1'>
+                                    {item.task.completed ?
+                                       <del>{item.task ? item.task.title : ''}</del> :
+                                       item.task ? item.task.title : ''
+                                    }
+                                 </span>
 
-					{/* FAB */}
-					<Link to='/detail'>
-						<FloatingActionButton />
-					</Link>
+                                 <span>{item.task ? dateformat(item.task.datetime, 'hh:MM TT') : ''}</span>
 
-				</div>
-			</div>
-		)
-	}
+                                 {/* complete flag */}
+                                 <div style={{ 'minWidth': '36px' }}>
+                                    {item.task.completed ?
+                                       <i className="fas fa-check-circle pl-3 check-icon" /> :
+                                       null
+                                    }
+                                 </div>
+
+                              </div>
+                           </div>
+                        </Link>
+                     }
+                  </div>
+               )}
+
+               {/* FAB */}
+               <Link to='/detail'>
+                  <FloatingActionButton />
+               </Link>
+
+            </div>
+         </div>
+      )
+   }
 }

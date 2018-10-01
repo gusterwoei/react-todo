@@ -20,7 +20,8 @@
 		"strictNullChecks": false,
 		"suppressImplicitAnyIndexErrors": true,
 		"noUnusedParameters": false,
-    	"noUnusedLocals": false
+		"noUnusedLocals": false,
+		"experimentalDecorators": true
 	},
 	"exclude": [
 		"node_modules",

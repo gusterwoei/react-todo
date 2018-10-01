@@ -6,3 +6,5 @@
   .app-toolbar .back-button {
     cursor: pointer;
     color: white; }
+  .app-toolbar .right-icon {
+    cursor: pointer; }

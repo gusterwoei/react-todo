@@ -33,6 +33,9 @@
 		"curly": false,
 		"triple-equals": false,
 		"no-string-throw": false,
-		"variable-name": false
+		"no-string-literal": false,
+		"variable-name": false,
+		"only-arrow-functions": false,
+		"forin": false
 	}
 }

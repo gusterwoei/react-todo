@@ -52,11 +52,10 @@ export class StorageService {
 				index = i
 				return true
 			}
-			
+
 			return false
 		})
 
-		console.log('index', index)
 		if (index >= 0) {
 			// update task
 			tasks[index] = task
@@ -74,10 +73,23 @@ export class StorageService {
 			tasks.forEach(item => {
 				item.datetime = new Date(item.datetime)
 			})
-			
+
 			return tasks
 		}
 
 		return []
 	}
+
+	public deleteTask(task: Task) {
+		let tasks = this.getTasks()
+		let index = tasks.findIndex(item => {
+			return item.id == task.id
+		})
+		
+		if (index >= 0) {
+			tasks.splice(index, 1)
+			this.putItem('tasks', JSON.stringify(tasks))
+		}
+	}
+
 }

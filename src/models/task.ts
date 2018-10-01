@@ -14,7 +14,8 @@ export class Task {
 	note: string
 	datetime: Date
 	subtasks: { title: string, completed?: boolean }[] = []
-
+	completed: boolean = false
+	
 	constructor(title: string) {
 		this.title = title
 		this.datetime = new Date()

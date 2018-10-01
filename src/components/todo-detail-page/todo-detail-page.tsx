@@ -139,7 +139,10 @@ export default class TodoDetailPage extends Component<Props, State> {
                   <div className="input-group-prepend">
                      <div className="input-group-text">
                         {/* complete checkbox */}
-                        <input type='checkbox' checked={this.mTask.completed} onChange={e => this.toggleComplete()} />
+                        {!this.mIsNewTask ? 
+                           <input type='checkbox' checked={this.mTask.completed} onChange={e => this.toggleComplete()} /> :
+                           null
+                        }
                      </div>
                   </div>
 

@@ -1,3 +1,5 @@
+@import '../../variables.scss';
+
 .todo-list-page {
     background-color: #eeeeee;
     overflow: scroll;
@@ -18,5 +20,11 @@
     a {
         text-decoration: none;
         color: #333;
+    }
+
+    .placeholder {
+        font-weight: bold;
+        color: #777;
+        margin-top: 100px;
     }
 }

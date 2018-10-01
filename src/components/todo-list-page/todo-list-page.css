@@ -11,3 +11,7 @@
   .todo-list-page a {
     text-decoration: none;
     color: #333; }
+  .todo-list-page .placeholder {
+    font-weight: bold;
+    color: #777;
+    margin-top: 100px; }

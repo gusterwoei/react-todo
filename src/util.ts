@@ -9,7 +9,7 @@ import { Task } from './models/task';
 */
 
 export class Util {
-	public static guid() {
+   public static guid() {
 		function s4() {
 			return Math.floor((1 + Math.random()) * 0x10000)
 				.toString(16)
@@ -31,4 +31,9 @@ export class Util {
 
 		return tasks
 	}
+	
+	public static isToday(date: Date, today: Date): any {
+		return date.getFullYear() == today.getFullYear() && date.getMonth() == today.getMonth() && date.getDate() == today.getDate()
+	}
+	
 }

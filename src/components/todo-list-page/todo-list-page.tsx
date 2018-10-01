@@ -14,6 +14,7 @@ import * as dateformat from 'dateformat'
 import FloatingActionButton from '../fab/fab';
 import { BrowserRouter as Router, Link } from "react-router-dom";
 import { StorageService } from '../../services/storage-service';
+import { Util } from '../../util';
 
 interface State {
    data: TodoListModel[]
@@ -32,20 +33,33 @@ export default class TodoListPage extends Component<any, State> {
       let tasks = StorageService.get().getTasks()
       let mData: TodoListModel[] = []
 
+      // sort tasks by date descendingly
+      tasks = tasks.sort((a, b) => {
+         return b.datetime.getTime() - a.datetime.getTime()
+      })
+
       let year: number, month: number, day: number
       tasks.forEach((task, index) => {
-         let model: TodoListModel = {}
          if (task.datetime.getFullYear() !== year || task.datetime.getMonth() !== month || task.datetime.getDate() !== day) {
             // add header
-            model.date = `${task.datetime.getFullYear()}/${task.datetime.getMonth()+1}/${task.datetime.getDate()}`
+            let header: TodoListModel = {}
+            let today = new Date()
+
+            // today
+            if (Util.isToday(task.datetime, today)) {
+               header.date = 'Today'
+            } else {
+               header.date = `${task.datetime.getFullYear()}/${task.datetime.getMonth() + 1}/${task.datetime.getDate()}`
+            }
 
             year = task.datetime.getFullYear()
             month = task.datetime.getMonth()
             day = task.datetime.getDate()
-            mData.push(model)
+            mData.push(header)
          }
 
          // add list model
+         let model: TodoListModel = {}
          model = {}
          model.id = index
          model.task = task
@@ -63,14 +77,22 @@ export default class TodoListPage extends Component<any, State> {
             <AppToolbar title='React Todo' history={this.props.history} />
             <div className='page-content'>
 
+               {/* placeholder */}
+               {!this.state.data || this.state.data.length == 0 ?
+                  <p className='text-center placeholder'>No task for you today :)</p>
+                  : null
+               }
+
+               {/* tasks */}
                {this.state.data.map(item =>
                   <div key={item.date ? item.date : item.id}>
                      {item.date ?
                         // date header
-                        <h5 className='mt-2 ml-1'>{item.date}</h5>
+                        <h5 className='mt-3 ml-1'>{item.date}</h5>
                         :
+                        // task item
                         <Link to={{ pathname: '/detail', state: { task: item.task } }}>
-                           <div className='card p-3 mb-2 list-item'>
+                           <div className='card p-3 mb-2 list-item' style={{ 'backgroundColor': item.task.completed ? '#EEE' : null }}>
                               <div className='row align-middle d-flex flex-row justify-content-end pr-3 pl-3'>
                                  {/* title */}
                                  <span className='flex-grow-1'>
@@ -83,12 +105,12 @@ export default class TodoListPage extends Component<any, State> {
                                  <span>{item.task ? dateformat(item.task.datetime, 'hh:MM TT') : ''}</span>
 
                                  {/* complete flag */}
-                                 <div style={{ 'minWidth': '36px' }}>
+                                 {/* <div style={{ 'minWidth': '36px' }}>
                                     {item.task.completed ?
                                        <i className="fas fa-check-circle pl-3 check-icon" /> :
                                        null
                                     }
-                                 </div>
+                                 </div> */}
 
                               </div>
                            </div>

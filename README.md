@@ -1,3 +1,5 @@
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
-
 # React Todo!
+
+A simple task management PWA app with React JS
+
+https://react-todo-123.firebaseapp.com

@@ -1,5 +1,3 @@
-import { Task } from "./models/task";
-
 /**
 import { Task } from './models/task';
  * @author Guster
@@ -7,6 +5,8 @@ import { Task } from './models/task';
  * @create date 2018-09-27 10:20:04
  * @modify date 2018-09-27 10:20:04
 */
+
+import { Task } from "./models/task";
 
 export class Util {
    public static guid() {

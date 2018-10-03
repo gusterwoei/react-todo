@@ -1,6 +1,6 @@
 .todo-list-page {
-  background-color: #eeeeee;
-  overflow: scroll; }
+  overflow: scroll;
+  z-index: 0; }
   .todo-list-page .page-content {
     margin-bottom: 60px; }
   .todo-list-page .check-icon {
@@ -14,4 +14,28 @@
   .todo-list-page .placeholder {
     font-weight: bold;
     color: #777;
-    margin-top: 100px; }
+    margin-top: 50px; }
+    @media only screen and (min-width: 768px) {
+      .todo-list-page .placeholder {
+        margin-top: 100px; } }
+  .todo-list-page .img-placeholder {
+    width: 160px;
+    height: 160px; }
+  .todo-list-page .footer {
+    background-color: #20232a;
+    color: #999;
+    font-size: 15px;
+    padding: 30px 50px;
+    bottom: 0px;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
+    display: none; }
+    @media only screen and (min-width: 768px) {
+      .todo-list-page .footer {
+        display: block; } }
+  .todo-list-page .fab-wrapper {
+    margin-bottom: 0px; }
+    @media only screen and (min-width: 768px) {
+      .todo-list-page .fab-wrapper {
+        margin-bottom: 100px; } }

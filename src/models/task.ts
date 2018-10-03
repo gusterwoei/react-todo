@@ -1,5 +1,3 @@
-import { Util } from "../util";
-
 /**
  * @author Guster
  * @email seongwoei.chua@veltra.com
@@ -7,6 +5,8 @@ import { Util } from "../util";
  * @modify date 2018-09-27 10:00:22
  * @desc Task
 */
+
+import { Util } from "../util";
 
 export class Task {
 	id: string

@@ -28,4 +28,11 @@
         border: 0.5px solid #eae37b;
         margin-top: 10px;
     }
+    .subtask-icon {
+        width: 20px;
+    }
+    .subtask-delete {
+        cursor: pointer;
+        color: red;
+    }
 }

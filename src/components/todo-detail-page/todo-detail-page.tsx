@@ -1,3 +1,10 @@
+/**
+ * @author Guster
+ * @email seongwoei.chua@veltra.com
+ * @create date 2018-10-03 15:18:46
+ * @modify date 2018-10-03 15:18:46
+*/
+
 import * as React from 'react'
 import { Component } from 'react';
 import AppToolbar from '../app-toolbar/app-toolbar';
@@ -10,186 +17,230 @@ import { EventBus } from '../../services/event-bus';
 import { AppEvent, EventName } from '../../services/app-event';
 
 interface Props {
-   task?: Task,
-   history?: RouterHistory
+	task?: Task,
+	history?: RouterHistory
 }
 interface State {
-   task?: Task,
-   subtaskTitle?: string
+	task?: Task,
+	subtaskTitle?: string
 }
 
 export default class TodoDetailPage extends Component<Props, State> {
-   private mTask: Task
-   private mSubTaskTitle: string = ''
-   mIsNewTask: boolean = false;
+	private mTask: Task
+	private mSubTaskTitle: string = ''
+	mIsNewTask: boolean = false;
 
-   constructor(props) {
-      super(props)
+	constructor(props) {
+		super(props)
 
-      if (props.location && props.location.state) {
-         // come from <Link>
-         this.mTask = props.location.state.task
-      } else {
-         this.mTask = new Task('')
-         this.mIsNewTask = true
-      }
+		if (props.location && props.location.state) {
+			// come from <Link>
+			this.mTask = props.location.state.task
+		} else {
+			this.mTask = new Task('')
+			this.mIsNewTask = true
+		}
 
-      this.state = {
-         task: this.mTask
-      }
-   }
+		this.state = {
+			task: this.mTask
+		}
+	}
 
-   private createSubtaskField(args: { title: string, completed?: boolean }, index?: number) {
-      let elem =
-         <div key={index} className='input-group mb-1'>
-            <div className="input-group-prepend">
-               <span className="input-group-text" id="basic-addon1">+</span>
-            </div>
-            <input
-               type='text'
-               placeholder='Add a subtask'
-               className='form-control'
-               value={args.title}
-               disabled={this.mTask.completed}
-               onChange={e => {
-                  // subtask title
-                  if (index === undefined) {
-                     // from the empty field
-                     this.mSubTaskTitle = e.target.value
-                  } else {
-                     // when field is being edited
-                     args.title = e.target.value
-                  }
-                  this.refresh()
-               }}
-               onKeyDown={e => {
-                  if (e.keyCode != 13) return
-                  if (this.mSubTaskTitle.trim() == '') return
+	private createSubtaskField(args: { title: string, completed?: boolean }, index?: number) {
+		let elem =
+			<div key={index} className='input-group mb-1'>
+				{/* subtask checkbox */}
+				<div className="input-group-prepend">
+					<span className="input-group-text" id="basic-addon1">
+						{index === undefined ?
+							<span className='subtask-icon'>+</span> :
+							<input className='subtask-icon' type='checkbox' checked={args.completed} onChange={e => {
+								// on subtask checked
+								args.completed = e.target.checked
+								this.save()
+								this.refresh()
+							}} />
+						}
+					</span>
+				</div>
 
-                  // add subtask to list and create a new subtask field
-                  this.mTask.subtasks.push({ title: this.mSubTaskTitle })
-                  this.mSubTaskTitle = ''
-                  this.refresh()
-               }} />
-         </div>
+				{/* subtask text */}
+				<input
+					type='text'
+					placeholder='Add a subtask'
+					className='form-control'
+					value={args.title}
+					disabled={this.mTask.completed}
+					onChange={e => {
+						// subtask title
+						if (index === undefined) {
+							// from the empty field
+							this.mSubTaskTitle = e.target.value
+						} else {
+							// when field is being edited
+							args.title = e.target.value
+						}
+						this.refresh()
+					}}
+					onKeyDown={e => {
+						if (e.keyCode != 13) return
+						if (this.mSubTaskTitle.trim() == '') return
 
-      return elem
-   }
+						// on enter, add subtask to list and create a new subtask field
+						this.mTask.subtasks.push({ title: this.mSubTaskTitle })
+						this.mSubTaskTitle = ''
+						this.save()
+						this.refresh()
+					}} />
 
-   private refresh() {
-      this.setState({
-         task: this.mTask,
-         subtaskTitle: this.mSubTaskTitle
-      })
-   }
+				{/* subtask delete button */}
+				{index !== undefined ?
+					<i className='align-self-center pl-3 far fa-trash-alt subtask-delete' onClick={e => this.deleteSubtask(index)} />
+					: null
+				}
+			</div>
 
-   private deleteTask() {
-      StorageService.get().deleteTask(this.mTask)
-      this.props.history.goBack()
+		return elem
+	}
 
-      // emitting an event to AppModal to hide
-      EventBus.get().post(new AppEvent(EventName.HIDE_MODAL))
-   }
+	private deleteSubtask(index: number) {
+		this.mTask.subtasks.splice(index, 1)
+		this.save()
+		this.refresh()
+	}
 
-   private toggleComplete() {
-      this.mTask.completed = !this.mTask.completed
-      StorageService.get().saveTask(this.mTask)
+	private refresh() {
+		this.setState({
+			task: this.mTask,
+			subtaskTitle: this.mSubTaskTitle
+		})
+	}
 
-      this.refresh()
-   }
+	private deleteTask() {
+		StorageService.get().deleteTask(this.mTask)
+		this.props.history.goBack()
 
-   private submit(e) {
-      try {
-         if (this.mTask.title.trim() == '') {
-            throw new ErrorEvent('Title must not be empty')
-         }
+		// emitting an event to AppModal to hide
+		EventBus.get().post(new AppEvent(EventName.HIDE_MODAL))
+	}
 
-         // add the remaining subtask if any
-         if (this.mSubTaskTitle.trim() != '') {
-            this.mTask.subtasks.push({ title: this.mSubTaskTitle })
-         }
+	private toggleComplete() {
+		this.mTask.completed = !this.mTask.completed
 
-         // save to the local storage
-         StorageService.get().saveTask(this.mTask)
+		// complete all subtasks
+		this.mTask.subtasks.forEach(item => {
+			item.completed = this.mTask.completed
+		})
 
-         this.props.history.goBack()
-      } catch (err) {
-         alert(err.type)
-      }
-   }
+		this.save()
+		this.refresh()
+	}
 
-   public render() {
-      return (
-         <div className='page-root todo-detail-page'>
-            {/* toolbar */}
-            <AppToolbar
-               title={this.mIsNewTask ? 'Add a new task' : 'Update task'}
-               showBackButton={true}
-               history={this.props.history}
-               faIcon={this.mIsNewTask ? null : 'far fa-trash-alt'}
-               onRightIconClick={e => {
-                  // toggle the delete dialog modal
-                  let modal = $('#myModal')
-                  modal['modal']('toggle')
-               }} />
+	private save() {
+		if (!this.validate()) return
 
-            <div className='page-content'>
-               <div className="input-group mb-3">
-                  <div className="input-group-prepend">
-                     <div className="input-group-text">
-                        {/* complete checkbox */}
-                        {!this.mIsNewTask ? 
-                           <input type='checkbox' checked={this.mTask.completed} onChange={e => this.toggleComplete()} /> :
-                           null
-                        }
-                     </div>
-                  </div>
+		StorageService.get().saveTask(this.mTask)
+	}
 
-                  {/* title */}
-                  <input
-                     type='text'
-                     className='form-control title'
-                     placeholder='What would you like to do?'
-                     required={true}
-                     disabled={this.mTask.completed}
-                     value={this.mTask ? this.mTask.title : ''}
-                     onChange={e => {
-                        // update title
-                        this.mTask.title = e.target.value
-                        this.refresh()
-                     }} />
-               </div>
+	private validate(): boolean {
+		return this.mTask.title.trim() != '';
+	}
 
-               {/* subtasks */}
-               {
-                  this.mTask && this.mTask.subtasks && this.mTask.subtasks.length > 0 ?
-                     this.mTask.subtasks.map((item, index) =>
-                        this.createSubtaskField(item, index)
-                     ) : null
-               }
-               {
-                  this.createSubtaskField({ title: this.mSubTaskTitle })
-               }
+	private submit(e) {
+		try {
+			if (!this.validate()) {
+				throw new ErrorEvent('Title must not be empty')
+			}
 
-               {/* notes */}
-               <textarea className='note' placeholder='Add a note' value={this.mTask.note} rows={6} onChange={e => {
-                  this.mTask.note = e.target.value
-                  this.refresh()
-               }} />
+			// add the remaining subtask if any
+			if (this.mSubTaskTitle.trim() != '') {
+				this.mTask.subtasks.push({ title: this.mSubTaskTitle })
+			}
 
-               {/* submit button */}
-               <button className='btn btn-primary mt-3 btn-submit' onClick={e => this.submit(e)} disabled={this.mTask.completed}>
-                  {this.mIsNewTask ? 'Complete' : 'Update'}
-               </button>
+			// save to the local storage
+			StorageService.get().saveTask(this.mTask)
 
-               {/* delete modal */}
-               <AppModal
-                  title={`"${this.mTask.title}" will be deleted forever.`}
-                  body='You will not be able to undo this action.'
-                  positiveButtonText='Delete'
-                  onPositiveButtonClick={e => this.deleteTask()} />
-            </div>
-         </div>
-      )
-   }
+			this.props.history.goBack()
+		} catch (err) {
+			alert(err.type)
+		}
+	}
+
+	public render() {
+		return (
+			<div className='page-root todo-detail-page'>
+				{/* toolbar */}
+				<AppToolbar
+					title={this.mIsNewTask ? 'Add a new task' : 'Update task'}
+					showBackButton={true}
+					history={this.props.history}
+					faIcon={this.mIsNewTask ? null : 'far fa-trash-alt'}
+					onRightIconClick={e => {
+						// toggle the delete dialog modal
+						let modal = $('#myModal')
+						modal['modal']('toggle')
+					}} />
+
+				<div className='page-content'>
+					<div className="input-group mb-3">
+						<div className="input-group-prepend">
+							<div className="input-group-text">
+								{/* complete checkbox */}
+								{!this.mIsNewTask ?
+									<input className='subtask-icon'
+										type='checkbox'
+										checked={this.mTask.completed}
+										onChange={e => this.toggleComplete()} /> :
+									null
+								}
+							</div>
+						</div>
+
+						{/* title */}
+						<input
+							type='text'
+							className='form-control title'
+							placeholder='What would you like to do?'
+							required={true}
+							disabled={this.mTask.completed}
+							value={this.mTask ? this.mTask.title : ''}
+							onChange={e => {
+								// update title
+								this.mTask.title = e.target.value
+								this.refresh()
+							}} />
+					</div>
+
+					{/* subtasks */}
+					{
+						this.mTask && this.mTask.subtasks && this.mTask.subtasks.length > 0 ?
+							this.mTask.subtasks.map((item, index) =>
+								this.createSubtaskField(item, index)
+							) : null
+					}
+					{
+						this.createSubtaskField({ title: this.mSubTaskTitle })
+					}
+
+					{/* notes */}
+					<textarea className='note' placeholder='Add a note' value={this.mTask.note} rows={6} onChange={e => {
+						this.mTask.note = e.target.value
+						this.refresh()
+					}} />
+
+					{/* submit button */}
+					<button className='btn btn-primary mt-3 btn-submit' onClick={e => this.submit(e)} disabled={this.mTask.completed}>
+						{this.mIsNewTask ? 'Complete' : 'Update'}
+					</button>
+
+					{/* delete modal */}
+					<AppModal
+						title={`"${this.mTask.title}" will be deleted forever.`}
+						body='You will not be able to undo this action.'
+						positiveButtonText='Delete'
+						onPositiveButtonClick={e => this.deleteTask()} />
+				</div>
+			</div>
+		)
+	}
 }

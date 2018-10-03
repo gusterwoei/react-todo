@@ -1,3 +1,11 @@
+/**
+ * @author Guster
+ * @email seongwoei.chua@veltra.com
+ * @create date 2018-10-03 15:19:34
+ * @modify date 2018-10-03 15:19:34
+ * @desc Custom toolbar
+*/
+
 import * as React from 'react'
 import { Component } from 'react'
 import './app-toolbar.css'

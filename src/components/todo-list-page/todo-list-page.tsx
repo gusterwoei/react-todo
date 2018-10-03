@@ -73,13 +73,18 @@ export default class TodoListPage extends Component<any, State> {
 
    render() {
       return (
-         <div className='page-root todo-list-page'>
+         <div className='page-root todo-list-page' style={{'backgroundColor': (this.state.data.length > 0) ? '#EEE' : 'white'}}>
+            {/* toolbar */}
             <AppToolbar title='React Todo' history={this.props.history} />
+
             <div className='page-content'>
 
                {/* placeholder */}
                {!this.state.data || this.state.data.length == 0 ?
-                  <p className='text-center placeholder'>No task for you today :)</p>
+                  <div className='text-center placeholder'>
+                     <img className='mb-3 img-placeholder' alt='' src='/empty-placeholder.png' />
+                     <h5>No task for you today :)</h5>
+                  </div>
                   : null
                }
 
@@ -124,6 +129,24 @@ export default class TodoListPage extends Component<any, State> {
                   <FloatingActionButton />
                </Link>
 
+            </div>
+
+            {/* footer (desktop mode only) */}
+            <div className='footer'>
+               <div className='row'>
+                  <div className='col'>
+                     <div className='row mb-3 align-middle'>
+                        <img alt='' src='/app-icon.png' width='30' height='30' />
+                        <div className='ml-2 align-self-center'>Guster Open Source</div>
+                     </div>
+                     <div className='row'>
+                        Copyright © 2018 Guster Inc.
+                     </div>
+                  </div>
+                  <a href='https://github.com/gusterwoei/react-todo' target='_blank'>
+                     <img className='d-block' alt='' src='/github-logo.png' width='30' height='30' />
+                  </a>
+               </div>
             </div>
          </div>
       )

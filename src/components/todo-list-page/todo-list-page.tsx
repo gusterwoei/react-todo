@@ -143,7 +143,7 @@ export default class TodoListPage extends Component<any, State> {
                         Copyright © 2018 Guster Inc.
                      </div>
                   </div>
-                  <a href='https://github.com/gusterwoei/react-todo' target='_blank'>
+                  <a href='https://gitlab.veltra.com/seongwoei.chua/react-todo' target='_blank'>
                      <img className='d-block' alt='' src='/github-logo.png' width='30' height='30' />
                   </a>
                </div>

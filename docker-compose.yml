@@ -1,0 +1,14 @@
+version: "3.4"
+services:
+  app:
+    env_file:
+      - .env
+    image: react-todo:latest
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    command: npm start
+    volumes:
+      - .:/usr/local/react-todo
+      - /usr/local/react-todo/node_modules/ # this means mouting 'nothing' on node_modules

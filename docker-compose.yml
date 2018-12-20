@@ -1,14 +1,27 @@
 version: "3.4"
 services:
   app:
-    env_file:
-      - .env
     image: react-todo:latest
-    build:
-      context: .
+    build: .
+    # image: gusterveltra/react-todo:latest
     ports:
       - "3000:3000"
-    command: npm start
+    command: npm run build
     volumes:
-      - .:/usr/local/react-todo
+      # - .:/usr/local/react-todo
+      - src:/usr/local/react-todo
       - /usr/local/react-todo/node_modules/ # this means mouting 'nothing' on node_modules
+    # env_file: # for environment variables
+    #   - .env
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8000:80"
+    depends_on: 
+      - app
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - src:/etc/nginx/html/react-todo
+
+volumes:
+  src:
